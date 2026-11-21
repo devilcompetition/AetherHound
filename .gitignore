@@ -1,1 +1,13 @@
+__pycache__/
+*.pyc
+.venv/
+.DS_Store
 
+# Large recordings
+*.wav
+*.iq
+*.npy
+data/raw/
+
+# But keep small sample clips
+!data/samples/*.wav
