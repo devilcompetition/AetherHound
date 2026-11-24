@@ -71,3 +71,31 @@ def detect_segments(energy, times, threshold=None):
     if start is not None:
         segments.append((float(start), float(times[-1])))
     return segments
+
+
+def check_pattern(segments, min_segments=3, tol=0.3, min_duration=0.15):
+    """Simple yes/no check: do the ON segments look like a keyed signal?
+
+    A deliberate covert channel (for example Morse) uses only a few distinct
+    ON durations (dot and dash). Random noise gives many different durations.
+    ON durations are grouped when they are within `tol` (relative) of the
+    group mean. The pattern counts as structured when there are at least
+    `min_segments` segments and at most 3 duration groups. Segments shorter
+    than `min_duration` seconds are ignored, because random noise produces
+    many very short blips.
+
+    Returns (is_structured, groups) where groups is a list of
+    (mean_duration_s, count).
+    """
+    durations = sorted(e - s for s, e in segments if e - s >= min_duration)
+    if len(durations) < min_segments:
+        return False, []
+    groups = [[durations[0]]]
+    for d in durations[1:]:
+        mean = sum(groups[-1]) / len(groups[-1])
+        if abs(d - mean) / mean <= tol:
+            groups[-1].append(d)
+        else:
+            groups.append([d])
+    summary = [(sum(g) / len(g), len(g)) for g in groups]
+    return len(groups) <= 3, summary
