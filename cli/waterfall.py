@@ -16,8 +16,8 @@ import time
 import numpy as np
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "dsp"))
-from spectrogram import (band_energy, compute_spectrogram, detect_segments,
-                         find_peak_frequency, load_wav)
+from spectrogram import (band_energy, check_pattern, compute_spectrogram,
+                         detect_segments, find_peak_frequency, load_wav)
 
 PALETTE = [17, 18, 19, 20, 21, 27, 33, 39, 45, 51, 50, 49, 48, 47, 46,
            82, 118, 154, 190, 226, 220, 214, 208, 202, 196]
@@ -72,6 +72,14 @@ def main():
     print(f"Detected {len(segs)} ON segments around that frequency:")
     for s, e in segs:
         print(f"  {s:6.2f}s -> {e:6.2f}s  ({e - s:.2f}s)")
+
+    structured, groups = check_pattern(segs)
+    if structured:
+        desc = ", ".join(f"{n} x {d:.2f}s" for d, n in groups)
+        print(f"\nPATTERN CHECK: structured on/off pattern FOUND ({desc})")
+        print("Possible covert channel.")
+    else:
+        print("\nPATTERN CHECK: no structured pattern found.")
 
 
 if __name__ == "__main__":
