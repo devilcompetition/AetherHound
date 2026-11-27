@@ -133,7 +133,6 @@ Each member works on their own branch of this shared repository. The Team Lead
 merges reviewed work into `main`.
 
 | Name | Role | Branch |
-|---|---|---|
 | Team Lead | Coordination, hardware, repo and final merge | `main` |
 | Mandodari Raju | Member 2: DSP pipeline, CLI waterfall, detection | `air2` |
 | [Name] | Member 3: [role] | `air3` |
